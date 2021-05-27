@@ -106,6 +106,42 @@ export default class ProductForm {
   }
 
   eventListeners() {
+    const btnUpload = this.element.querySelector('button[name=uploadImage]');
+
+    btnUpload.addEventListener('click', () => {
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.click();
+
+      input.addEventListener('change', async event => {
+        const myHeaders = new Headers();
+        myHeaders.append("Authorization", `Client-ID 28aaa2e823b03b1` );
+
+        const formdata = new FormData();
+        formdata.append("image", input.files[0]);
+
+        const requestOptions = {
+          method: 'POST',
+          headers: myHeaders,
+          body: formdata,
+          // redirect: 'follow'
+        };
+
+        await fetch("https://api.imgur.com/3/image", requestOptions)
+          .then(response => response.text())
+          .then(result => console.log('result', result))
+          .catch(error => console.log('error', error));
+
+
+      })
+    })
+
+    
+    // uploader(){
+    //   const input = document.createElement('input');
+    //   input.type = 'file';
+    //   input.click();
+    // }
 
     this.subElements.images.addEventListener('click', event =>  {
      
