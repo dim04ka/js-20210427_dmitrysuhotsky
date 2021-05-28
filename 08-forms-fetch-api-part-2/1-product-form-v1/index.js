@@ -9,6 +9,7 @@ export default class ProductForm {
   subElements = {};
 
   currentItem = {
+    id: '',
     title: '',
     description: '',
     images: [],
@@ -21,6 +22,7 @@ export default class ProductForm {
   };
 
   initValues = {
+    id: '',
     title: '',
     description: '',
     images: [],
@@ -106,6 +108,40 @@ export default class ProductForm {
   }
 
   eventListeners() {
+
+
+    const changeTitle = this.element.querySelector('input[name=title]')
+    changeTitle.addEventListener('change', event => {
+      this.currentItem.title = event.target.value;
+    })
+
+
+    const btnSave = this.element.querySelector('button[name=save]');
+    btnSave.addEventListener('click', async event => {
+      event.preventDefault()
+      // console.log(this.currentItem)
+      // const formdata = new FormData();
+      // formdata.append("title", this.currentItem.title);
+      // formdata.append("id", this.currentItem.id);
+      // console.log(formdata)
+      const data = {
+        id: this.currentItem.id,
+        title: this.currentItem.title
+      }
+
+      const requestOptions = {
+        method: 'PATCH',
+        // headers: { 'Content-Type': 'application/json' },
+        body:  JSON.stringify(data),
+      };
+      await fetch(new URL(BACKEND_URL_HOST_PRODUCTS, BACKEND_URL), requestOptions)
+        .then(response => response.text())
+        .then(result => console.log('result', result))
+        .catch(error => console.log('error', error));
+
+    })
+
+
     const btnUpload = this.element.querySelector('button[name=uploadImage]');
 
     btnUpload.addEventListener('click', () => {
@@ -115,7 +151,7 @@ export default class ProductForm {
 
       input.addEventListener('change', async event => {
         const myHeaders = new Headers();
-        myHeaders.append("Authorization", `Client-ID 28aaa2e823b03b1` );
+        myHeaders.append("Authorization", `Client-ID 28aaa2e823b03b1`);
 
         const formdata = new FormData();
         formdata.append("image", input.files[0]);
@@ -124,15 +160,13 @@ export default class ProductForm {
           method: 'POST',
           headers: myHeaders,
           body: formdata,
-          // redirect: 'follow'
+          redirect: 'follow'
         };
 
         await fetch("https://api.imgur.com/3/image", requestOptions)
           .then(response => response.text())
           .then(result => console.log('result', result))
           .catch(error => console.log('error', error));
-
-
       })
     })
 
